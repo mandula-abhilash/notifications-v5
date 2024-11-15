@@ -1,20 +1,24 @@
-import Redis from 'ioredis';
-import { config } from './config.js';
+import Redis from "ioredis";
+import { config } from "./config.js";
 
-export const redisClient = new Redis(config.redisUrl, {
+export const redisClient = new Redis({
+  host: config.redis.host,
+  port: config.redis.port,
+  username: config.redis.username,
+  password: config.redis.password,
   retryStrategy: (times) => {
     const delay = Math.min(times * 50, 2000);
     return delay;
   },
-  maxRetriesPerRequest: null
+  maxRetriesPerRequest: null,
 });
 
-redisClient.on('error', (err) => {
-  console.error('Redis Client Error:', err);
+redisClient.on("error", (err) => {
+  console.error("Redis Client Error:", err);
 });
 
-redisClient.on('connect', () => {
-  console.log('Connected to Redis');
+redisClient.on("connect", () => {
+  console.log("Connected to Redis");
 });
 
 // Utility functions for managing socket connections
